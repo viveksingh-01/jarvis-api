@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
@@ -19,7 +20,12 @@ func main() {
 	// Instantiate Gorilla Mux for routing
 	r := mux.NewRouter()
 
+	// Load port from .env if available
 	port := "9090"
+	if envPort := os.Getenv("PORT"); envPort != "" {
+		port = envPort
+	}
+
 	log.Println("Server started at port:", port)
 	log.Fatal(http.ListenAndServe(":"+port, r))
 }
