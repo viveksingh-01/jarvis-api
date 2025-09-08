@@ -8,6 +8,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
+	"github.com/viveksingh-01/jarvis-api/routes"
 )
 
 func init() {
@@ -19,6 +20,7 @@ func main() {
 
 	// Instantiate Gorilla Mux for routing
 	r := mux.NewRouter()
+	routes.RegisterRoutes(r)
 
 	// Load port from .env if available
 	port := "9090"
