@@ -2,8 +2,9 @@ package routes
 
 import (
 	"github.com/gorilla/mux"
+	"github.com/viveksingh-01/jarvis-api/handlers"
 )
 
 func RegisterRoutes(router *mux.Router) {
-	// TODO: Register all the routes here
+	router.HandleFunc("/conversation", handlers.HandleConversation)
 }
