@@ -12,16 +12,11 @@ import (
 var Client *genai.Client
 
 func HandleConversation(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		utils.SendErrorResponse(w, http.StatusMethodNotAllowed, utils.ErrorResponse{
-			Error: "Invalid request method, please use POST method",
-		})
+	if !utils.ValidatePostRequestMethod(w, r) {
+		return
 	}
-	if r.Body == nil {
-		utils.SendErrorResponse(w, http.StatusBadRequest, utils.ErrorResponse{
-			Error: "Request body cannot be empty",
-		})
-		defer r.Body.Close()
+	if !utils.ValidateRequestBody(w, r) {
+		return
 	}
 
 	var req models.ConversationRequest
