@@ -1,8 +1,10 @@
 package handlers
 
 import (
+	"encoding/json"
 	"net/http"
 
+	"github.com/viveksingh-01/jarvis-api/models"
 	"github.com/viveksingh-01/jarvis-api/utils"
 	"google.golang.org/genai"
 )
@@ -20,5 +22,12 @@ func HandleConversation(w http.ResponseWriter, r *http.Request) {
 			Error: "Request body cannot be empty",
 		})
 		defer r.Body.Close()
+	}
+
+	var req models.ConversationRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		utils.SendErrorResponse(w, http.StatusBadRequest, utils.ErrorResponse{
+			Error: "Invalid request body",
+		})
 	}
 }
