@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/viveksingh-01/jarvis-api/models"
@@ -31,7 +32,14 @@ func HandleConversation(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 
-	session := sessions[req.Email]
+	session, exist := sessions[req.Email]
+	if !exist {
+		session, err := Client.Chats.Create(r.Context(), GEMINI_MODEL, nil, nil)
+		if err != nil {
+			log.Println("Error creating new chat session", err.Error())
+		}
+		sessions[req.Email] = session
+	}
 
 	response, err := session.SendMessage(r.Context(), genai.Part{Text: req.Message})
 	if err != nil {
