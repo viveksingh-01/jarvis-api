@@ -9,7 +9,12 @@ import (
 	"google.golang.org/genai"
 )
 
-var Client *genai.Client
+const GEMINI_MODEL = "gemini-2.0-flash"
+
+var (
+	Client   *genai.Client
+	sessions = make(map[string]*genai.Chat)
+)
 
 func HandleConversation(w http.ResponseWriter, r *http.Request) {
 	if !utils.ValidatePostRequestMethod(w, r) {
@@ -25,4 +30,17 @@ func HandleConversation(w http.ResponseWriter, r *http.Request) {
 			Error: "Invalid request body",
 		})
 	}
+
+	session := sessions[req.Email]
+
+	response, err := session.SendMessage(r.Context(), genai.Part{Text: req.Message})
+	if err != nil {
+		utils.SendErrorResponse(w, http.StatusInternalServerError, utils.ErrorResponse{
+			Error: err.Error(),
+		})
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(models.ConversationResponse{Response: response.Text()})
 }
