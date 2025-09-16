@@ -37,7 +37,14 @@ func HandleConversation(w http.ResponseWriter, r *http.Request) {
 	mu.Lock()
 	session, exist := sessions[req.Email]
 	if !exist {
-		session, err := Client.Chats.Create(r.Context(), GEMINI_MODEL, nil, nil)
+		var cfg *genai.GenerateContentConfig
+		if req.System != "" {
+			p := &genai.Part{Text: req.System}
+			cfg = &genai.GenerateContentConfig{
+				SystemInstruction: &genai.Content{Parts: []*genai.Part{p}},
+			}
+		}
+		session, err := Client.Chats.Create(r.Context(), GEMINI_MODEL, cfg, nil)
 		if err != nil {
 			log.Println("Error creating new chat session", err.Error())
 		}
