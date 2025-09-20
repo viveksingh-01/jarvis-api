@@ -11,12 +11,17 @@ import (
 
 func InitializeGemini() {
 	apiKey := os.Getenv("GEMINI_API_KEY")
+	if apiKey == "" {
+		log.Fatal("GEMINI_API_KEY environment variable is not set")
+	}
+
 	c, err := genai.NewClient(context.Background(), &genai.ClientConfig{
 		APIKey:  apiKey,
 		Backend: genai.BackendGeminiAPI,
 	})
 	if err != nil {
-		log.Printf("Failed to initialize Gemini client: %v", err)
+		log.Fatal("Failed to initialize Gemini client:", err)
 	}
 	handlers.Client = c
+	log.Println("Gemini client initialized successfully")
 }
