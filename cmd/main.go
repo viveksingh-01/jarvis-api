@@ -8,6 +8,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
+	"github.com/viveksingh-01/jarvis-api/config"
 	"github.com/viveksingh-01/jarvis-api/routes"
 )
 
@@ -17,6 +18,9 @@ func init() {
 
 func main() {
 	fmt.Println("Welcome to JARVIS API")
+
+	// Initialize Gemini client
+	config.InitializeGemini()
 
 	// Instantiate Gorilla Mux for routing
 	r := mux.NewRouter()
