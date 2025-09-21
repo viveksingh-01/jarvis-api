@@ -8,6 +8,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
+	"github.com/rs/cors"
 	"github.com/viveksingh-01/jarvis-api/config"
 	"github.com/viveksingh-01/jarvis-api/routes"
 )
@@ -26,6 +27,14 @@ func main() {
 	r := mux.NewRouter()
 	routes.RegisterRoutes(r)
 
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{os.Getenv("ALLOWED_ORIGIN")},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Content-Type", "Authorization"},
+		AllowCredentials: true,
+	})
+	handler := c.Handler(r)
+
 	// Load port from .env if available
 	port := "9090"
 	if envPort := os.Getenv("PORT"); envPort != "" {
@@ -33,7 +42,7 @@ func main() {
 	}
 
 	log.Println("Server started at port:", port)
-	log.Fatal(http.ListenAndServe(":"+port, r))
+	log.Fatal(http.ListenAndServe(":"+port, handler))
 }
 
 func loadEnvVariables() {
