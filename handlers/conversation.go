@@ -27,6 +27,14 @@ func HandleConversation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Check if client is initialized
+	if Client == nil {
+		utils.SendErrorResponse(w, http.StatusInternalServerError, utils.ErrorResponse{
+			Error: "Gemini client not initialized",
+		})
+		return
+	}
+
 	var req models.ConversationRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		utils.SendErrorResponse(w, http.StatusBadRequest, utils.ErrorResponse{
