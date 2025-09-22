@@ -17,7 +17,16 @@ var (
 	Client   *genai.Client
 	sessions = make(map[string]*genai.Chat)
 	mu       sync.Mutex
+	cfg      *genai.GenerateContentConfig
 )
+
+func init() {
+	systemInstructionText := "You are JARVIS and I'm Tony Stark. Please keep the conversation short, in less than 20 words."
+	p := &genai.Part{Text: systemInstructionText}
+	cfg = &genai.GenerateContentConfig{
+		SystemInstruction: &genai.Content{Parts: []*genai.Part{p}},
+	}
+}
 
 func HandleConversation(w http.ResponseWriter, r *http.Request) {
 	if !utils.ValidatePostRequestMethod(w, r) {
@@ -45,13 +54,6 @@ func HandleConversation(w http.ResponseWriter, r *http.Request) {
 	mu.Lock()
 	session, exist := sessions[req.Email]
 	if !exist {
-		var cfg *genai.GenerateContentConfig
-		if req.System != "" {
-			p := &genai.Part{Text: req.System}
-			cfg = &genai.GenerateContentConfig{
-				SystemInstruction: &genai.Content{Parts: []*genai.Part{p}},
-			}
-		}
 		session, err := Client.Chats.Create(r.Context(), GEMINI_MODEL, cfg, nil)
 		if err != nil {
 			log.Println("Error creating new chat session", err.Error())
