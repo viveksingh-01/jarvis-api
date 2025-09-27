@@ -6,5 +6,6 @@ import (
 )
 
 func RegisterRoutes(router *mux.Router) {
+	router.HandleFunc("/login", handlers.Login)
 	router.HandleFunc("/conversation", handlers.HandleConversation)
 }
