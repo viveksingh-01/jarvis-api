@@ -38,6 +38,12 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
+	if err != nil {
+		utils.SendErrorResponse(w, http.StatusInternalServerError, utils.ErrorResponse{
+			Error: "An internal error occurred, please try again.",
+		})
+		return
+	}
 
 	// TODO
 }
