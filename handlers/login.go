@@ -53,5 +53,14 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]any{
+		"success": true,
+		"message": "You've logged-in successfully!",
+		"data": map[string]string{
+			"id":    user.ID.Hex(),
+			"email": user.Email,
+			"name":  user.Name,
+		},
+	})
 }
