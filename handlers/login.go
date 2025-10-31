@@ -45,5 +45,13 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Validate input password by comparing with hashed password stored in DB
+	if !utils.CheckPasswordHash(req.Password, user.Password) {
+		utils.SendErrorResponse(w, http.StatusBadRequest, utils.ErrorResponse{
+			Error: "Invalid email or password.\n Please check and try again.",
+		})
+		return
+	}
+
 	// TODO
 }
