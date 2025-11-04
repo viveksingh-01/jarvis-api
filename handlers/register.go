@@ -3,12 +3,14 @@ package handlers
 import (
 	"context"
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/viveksingh-01/jarvis-api/database"
 	"github.com/viveksingh-01/jarvis-api/models"
 	"github.com/viveksingh-01/jarvis-api/utils"
 	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
 func Register(w http.ResponseWriter, r *http.Request) {
@@ -31,6 +33,13 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	if err == nil {
 		utils.SendErrorResponse(w, http.StatusBadRequest, utils.ErrorResponse{
 			Error: "The email is already registered.\n Please try logging in.",
+		})
+		return
+	}
+	if err != mongo.ErrNoDocuments {
+		log.Println("Database error: " + err.Error())
+		utils.SendErrorResponse(w, http.StatusInternalServerError, utils.ErrorResponse{
+			Error: "An internal error occurred,\n Please try again.",
 		})
 		return
 	}
