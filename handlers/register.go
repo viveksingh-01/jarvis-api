@@ -59,5 +59,14 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	user.Password = hashedPassword
 	user.CreatedAt = time.Now()
 
+	if _, err := database.UserCollection.InsertOne(context.TODO(), user); err != nil {
+		log.Println("Error occurred while inserting user's record to DB:", err.Error())
+		utils.SendErrorResponse(w, http.StatusInternalServerError, utils.ErrorResponse{
+			Error: "The request couldn't be processed.\n Please try again after some time.",
+		})
+		return
+	}
+	log.Printf("New user registered: %s", user.Email)
+
 	// TODO
 }
