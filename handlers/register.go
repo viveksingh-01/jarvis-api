@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/viveksingh-01/jarvis-api/database"
 	"github.com/viveksingh-01/jarvis-api/models"
@@ -43,6 +44,20 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
+
+	// Generate hashed-password and store as password
+	hashedPassword, err := utils.HashPassword(req.Password)
+	if err != nil {
+		log.Println("Error occurred while hashing password:", err.Error())
+		utils.SendErrorResponse(w, http.StatusInternalServerError, utils.ErrorResponse{
+			Error: "The request couldn't be processed.\n Please try again after some time.",
+		})
+		return
+	}
+	user.Email = req.Email
+	user.Name = req.Name
+	user.Password = hashedPassword
+	user.CreatedAt = time.Now()
 
 	// TODO
 }
