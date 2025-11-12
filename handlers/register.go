@@ -68,5 +68,15 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Printf("New user registered: %s", user.Email)
 
-	// TODO
+	// Send the response to client
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(map[string]any{
+		"success": true,
+		"message": "User registered successfully.",
+		"data": map[string]string{
+			"id":    user.ID.Hex(),
+			"email": user.Email,
+			"name":  user.Name,
+		},
+	})
 }
