@@ -1,8 +1,10 @@
 package config
 
 import (
+	"context"
 	"log"
 	"os"
+	"time"
 
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
@@ -11,8 +13,15 @@ import (
 func ConnectToDB() {
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
 	opts := options.Client().ApplyURI(os.Getenv("MONGODB_URI")).SetServerAPIOptions(serverAPI)
-	_, err := mongo.Connect(opts)
+	client, err := mongo.Connect(opts)
 	if err != nil {
 		log.Fatal("Error occurred while connecting to the database: ", err.Error())
 	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	if err := client.Ping(ctx, nil); err != nil {
+		log.Fatal("Could not establish connection to the database.", err.Error())
+	}
+	log.Println("Connected to database successfully!")
 }
