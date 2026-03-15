@@ -11,7 +11,7 @@ import (
 	"google.golang.org/genai"
 )
 
-const GEMINI_MODEL = "gemini-2.0-flash"
+const GEMINI_MODEL = "gemini-3.1-flash-lite-preview"
 
 var (
 	Client   *genai.Client
