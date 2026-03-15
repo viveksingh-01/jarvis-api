@@ -20,6 +20,9 @@ func init() {
 func main() {
 	fmt.Println("Welcome to JARVIS API")
 
+	// Establish DB connection
+	config.ConnectToDB()
+
 	// Initialize Gemini client
 	config.InitializeGemini()
 
